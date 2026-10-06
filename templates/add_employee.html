@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink: #0f2a2e;
+            --teal: #0f766e;
+            --teal-dark: #0b5e57;
+            --teal-soft: #e3f3f1;
+            --paper: #f2f5f4;
+            --card: #ffffff;
+            --text: #14262a;
+            --muted: #5f7377;
+            --line: #dde5e4;
+            --red: #b42318;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--paper);
+            color: var(--text);
+            font-family: "Manrope", "Segoe UI", system-ui, Arial, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; }
+        :focus-visible { outline: 3px solid #5eead4; outline-offset: 2px; }
+
+        /* ---------- Top bar + header band ---------- */
+        .topbar { background: var(--ink); color: #fff; }
+
+        .topbar-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            height: 64px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--teal);
+        }
+
+        .brand-mark svg { width: 20px; height: 20px; }
+
+        .header-band {
+            background: var(--ink);
+            color: #fff;
+            padding: 20px 24px 92px;
+        }
+
+        .header-inner { max-width: 1180px; margin: 0 auto; }
+
+        .header-band h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .header-band p { color: #a9c3c6; margin-top: 6px; }
+
+        /* ---------- Form card ---------- */
+        main {
+            max-width: 560px;
+            margin: -64px auto 0;
+            padding: 0 20px 56px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 32px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: #fff;
+            color: var(--text);
+            font: inherit;
+            font-size: 15px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input::placeholder { color: #94a5a8; }
+
+        input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.14);
+        }
+
+        input.invalid { border-color: var(--red); }
+        input.invalid:focus { box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.14); }
+
+        .hint { margin-top: 6px; color: var(--muted); font-size: 12px; }
+
+        .error {
+            display: none;
+            margin-top: 6px;
+            color: var(--red);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ---------- Buttons ---------- */
+        .btn-row { display: flex; gap: 12px; margin-top: 28px; }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary { background: var(--teal); color: #fff; }
+        .btn-primary:hover { background: var(--teal-dark); }
+
+        .btn-ghost { background: #fff; color: var(--text); border-color: var(--line); }
+        .btn-ghost:hover { background: var(--paper); }
+
+        /* ---------- Confirm dialog ---------- */
+        dialog {
+            margin: auto;
+            width: min(420px, 92vw);
+            padding: 26px;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 24px 60px rgba(15, 42, 46, 0.3);
+        }
+
+        dialog::backdrop { background: rgba(15, 42, 46, 0.55); }
+        dialog h3 { font-size: 18px; margin-bottom: 6px; }
+        dialog p { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
+        .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+        .dialog-actions .btn { flex: none; }
+
+        @media (max-width: 520px) {
+            .card { padding: 24px 20px; }
+            .header-band h1 { font-size: 26px; }
+            .btn-row { flex-direction: column-reverse; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </span>
+                Employee Manager
+            </a>
+        </div>
+    </header>
+
+    <section class="header-band">
+        <div class="header-inner">
+            <h1>Add employee</h1>
+            <p>Enter the details below to add a new team member.</p>
+        </div>
+    </section>
+
+    <main>
+        <div class="card">
+
+            <form action="/addemp" method="POST" id="addEmployeeForm" novalidate>
+
+                <!-- ID -->
+                <div class="form-group">
+                    <label for="employeeId">Employee ID</label>
+                    <input type="number" id="employeeId" name="id" min="1" placeholder="e.g. 101" required oninput="validateID()">
+                    <div class="hint">Each employee needs a unique ID.</div>
+                    <div class="error" id="idError">Employee ID must be greater than 0.</div>
+                </div>
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="nm" placeholder="e.g. Rohan Sharma" required oninput="validateName()">
+                    <div class="error" id="nameError">Enter a name with at least 2 characters.</div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="e.g. rohan@company.com" required oninput="validateEmail()">
+                    <div class="error" id="emailError">Enter a valid email address.</div>
+                </div>
+
+                <!-- Salary -->
+                <div class="form-group">
+                    <label for="salary">Salary (₹)</label>
+                    <input type="number" id="salary" name="sal" min="1" placeholder="e.g. 45000" required oninput="validateSalary()">
+                    <div class="error" id="salaryError">Salary must be greater than 0.</div>
+                </div>
+
+                <div class="btn-row">
+                    <a href="/" class="btn btn-ghost">Back to employees</a>
+                    <button type="submit" class="btn btn-primary">Add employee</button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <!-- Add confirmation -->
+    <dialog id="confirmDialog">
+        <h3>Add this employee?</h3>
+        <p>The new employee will be saved to your team list.</p>
+        <div class="dialog-actions">
+            <button type="button" class="btn btn-ghost" id="cancelAdd">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirmAdd">Yes, add</button>
+        </div>
+    </dialog>
+
+    <script>
+        function setState(inputId, errorId, valid) {
+            document.getElementById(errorId).style.display = valid ? "none" : "block";
+            document.getElementById(inputId).classList.toggle("invalid", !valid);
+            return valid;
+        }
+
+        function validateID() {
+            const id = document.getElementById("employeeId").value;
+            return setState("employeeId", "idError", id !== "" && Number(id) > 0);
+        }
+
+        function validateName() {
+            const name = document.getElementById("name").value.trim();
+            return setState("name", "nameError", name.length >= 2);
+        }
+
+        function validateEmail() {
+            const email = document.getElementById("email").value.trim();
+            return setState("email", "emailError", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+        }
+
+        function validateSalary() {
+            const salary = document.getElementById("salary").value;
+            return setState("salary", "salaryError", salary !== "" && Number(salary) > 0);
+        }
+
+        const form = document.getElementById("addEmployeeForm");
+        const dialog = document.getElementById("confirmDialog");
+
+        // Validate first, then ask for confirmation
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const ok = [validateID(), validateName(), validateEmail(), validateSalary()].every(Boolean);
+            if (ok) dialog.showModal();
+        });
+
+        document.getElementById("cancelAdd").addEventListener("click", function () {
+            dialog.close();
+        });
+
+        document.getElementById("confirmAdd").addEventListener("click", function () {
+            form.submit();
+        });
+    </script>
+
+</body>
+</html>
